@@ -35,7 +35,7 @@ gulp.task('jshint', lint);
 
 // Gulp Task: 'init'
 function init(cb) {
-	exec('enyo init', cb);
+	exec('enyo init', {}, cb);
 }
 
 // Gulp Task: 'build'
@@ -61,7 +61,7 @@ function enyo(cb) {
 	opts = opts.map(function (v) { return v.match(/^[^\s-]+?\s+[^\s]/g) ? ('"' + v + '"') : v; })
 			.map(function (v) { return v.replace(/=((?=[^\s'"]+\s)[^'"]*$)/g, '="$1"'); });
 	console.log('Building Enyo app at ' + process.cwd() + '...');
-	exec('enyo pack ' + opts.join(' '), cb);
+	exec('enyo pack ' + opts.join(' '), {}, cb);
 }
 
 // Gulp Task: 'electron'
@@ -85,7 +85,9 @@ function run(cb) {
 	if(!(process.argv.indexOf('-P')>-1 || process.argv.indexOf('--production')>-1 || cfg.production)) {
 		flags = ' --dev-mode';
 	}
-	exec(require('electron-prebuilt') + ' ./dist/' + (pkg['electron-main'] || 'launch.js') + flags, cb);
+	var env = process.env;
+	env['ELECTRON_FORCE_WINDOW_MENU_BAR'] = true;
+	exec(require('electron-prebuilt') + ' ./dist/' + (pkg['electron-main'] || 'launch.js') + flags, {env:env}, cb);
 }
 
 // Gulp Task: 'jshint'
@@ -128,8 +130,8 @@ function electronBuild(platform, action, callback) {
 	});
 }
 
-function exec(cmd, callback) {
-	var child = cp.exec(cmd, {}, function(err, stdout, stderr) {
+function exec(cmd, opts, callback) {
+	var child = cp.exec(cmd, opts, function(err, stdout, stderr) {
 		if(err) {
 			callback(err);
 		} else {
