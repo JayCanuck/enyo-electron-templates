@@ -85,7 +85,7 @@ function run(cb) {
 	if(!(process.argv.indexOf('-P')>-1 || process.argv.indexOf('--production')>-1 || cfg.production)) {
 		flags = ' --dev-mode';
 	}
-	exec('electron ./dist/' + (pkg['electron-main'] || 'launch.js') + flags, cb);
+	exec(require('electron-prebuilt') + ' ./dist/' + (pkg['electron-main'] || 'launch.js') + flags, cb);
 }
 
 // Gulp Task: 'jshint'
