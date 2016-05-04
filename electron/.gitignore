@@ -2,5 +2,5 @@
 dist/
 lib/
 bin/
-nwjs/
+electron/
 node_modules/
